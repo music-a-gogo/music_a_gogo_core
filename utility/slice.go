@@ -20,10 +20,10 @@ func SliceLeftRolling(s []int, step int) []int {
 	}
 }
 
-func NoteNames(notes []*elements.Note) []string {
-	names := make([]string, len(notes))
-	for i, n := range notes {
-		names[i] = n.NoteName()[0]
+func IntervalSum(intervals []elements.Interval) int {
+	sum := 0
+	for _, v := range intervals {
+		sum += int(v)
 	}
-	return names
+	return sum
 }

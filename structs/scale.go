@@ -1,6 +1,9 @@
 package elements
 
-import "music_a_gogo/utility"
+import (
+	"errors"
+	"music_a_gogo/utility"
+)
 
 // modes
 const (
@@ -11,61 +14,72 @@ const (
 	Mixolydian = 4
 	Aeolian    = 5
 	Locrian    = 6
+	Major      = 7
+	Minor      = 8
 )
 
-// tonality
-const (
-	Major = 0
-	Minor = 1
+// TODO: Some of the Intervals should be provided in an isolated file, and provided publicly
+var (
+	// MajorScaleIntervals is Intervals for a Major Scale or an Ionian Scale
+	MajorScaleIntervals = []int{2, 2, 1, 2, 2, 2, 1}
 )
-
-var MajorScaleDiffs = []int{2, 2, 1, 2, 2, 2, 1}
 
 type Scale struct {
-	TonicNote int
-	Tonality  int
-	Mode      int
+	Root      *Note      // like C or C#
+	Intervals []Interval // for a major scale, it's [2,2,1,2,2,2,1]
 }
 
-func NewTotalityScale(tonicNote int, tonality int) *Scale {
+func (s *Scale) intervalOfIntervals() int {
+	return utility.IntervalSum(s.Intervals)
+}
+
+func NewScale(root *Note, nums []int) (*Scale, error) {
+	// TODO: check the legitimacy of the root
+	intervals := make([]Interval, len(nums))
+	for i, v := range nums {
+		// Check the legitimacy of the interval slice
+		if v < 0 {
+			return nil, errors.New("interval cannot be negative")
+		}
+		// TODO: the interval slice should not be something repeated, it's nonsense, like {1, 2, 3, 1, 2, 3} should be {1, 2, 3}
+		intervals[i] = Interval(v)
+	}
+
 	return &Scale{
-		TonicNote: tonicNote,
-		Tonality:  tonality,
-		Mode:      Ionian,
-	}
+		Root:      root,
+		Intervals: intervals,
+	}, nil
 }
 
-func NewModeScale(tonicNote int, mode int) *Scale {
-	return &Scale{
-		TonicNote: tonicNote,
-		Tonality:  Major,
-		Mode:      mode,
-	}
+func (s *Scale) NthNoteName(n int) NoteName {
+	steps := s.intervalOfIntervals()*(n/len(s.Intervals)) + utility.IntervalSum(s.Intervals[:(n%len(s.Intervals))])
+	note := s.Root.Add(Interval(steps))
+	return note.NoteName()
 }
 
-func (s *Scale) ConstituentNotes() []*Note {
-	var scaleDiffs []int
-	startNote := NewNote(s.TonicNote)
-
-	if s.Tonality == Minor {
-		scaleDiffs = utility.SliceLeftRolling(MajorScaleDiffs, 5)
-	} else {
-		scaleDiffs = MajorScaleDiffs
+func (s *Scale) UnrepeatedSequence() []NoteName {
+	totalIntervals := 0
+	for _, v := range s.Intervals {
+		totalIntervals += int(v)
 	}
-
-	if s.Mode != Ionian {
-		scaleDiffs = utility.SliceLeftRolling(scaleDiffs, s.Mode)
+	sequenceLen := utility.LCM(PerfectOctave, totalIntervals) / totalIntervals * len(s.Intervals)
+	sequence := make([]NoteName, sequenceLen)
+	for i := 0; i < sequenceLen; i++ {
+		sequence[i] = s.NthNoteName(i)
 	}
+	return sequence
+}
 
-	notes := make([]*Note, len(MajorScaleDiffs)+1)
-	notes[0] = startNote
-	for i := 1; i < len(notes); i++ {
-		notes[i] = notes[i-1].Add(Interval(scaleDiffs[i-1]))
+// ConstituentNoteNames return a set containing all the note names which can not be repeated
+func (s *Scale) ConstituentNoteNames() []NoteName {
+	set := make(map[NoteName]struct{})
+	notes := make([]NoteName, 0)
+	for _, v := range s.UnrepeatedSequence() {
+		_, ok := set[v]
+		if !ok {
+			set[v] = struct{}{}
+			notes = append(notes, v)
+		}
 	}
 	return notes
-}
-
-// TODO: if tonality is minor, show with flat representation
-func (s *Scale) ConstituentNotesNames() []string {
-	return utility.NoteNames(s.ConstituentNotes())
 }

@@ -38,8 +38,8 @@ type Note struct {
 
 type NoteName int
 
-func NewNote(n int) *Note {
-	return &Note{IntervalToMidC: Interval(n)}
+func NewNote(intervalToMidC int) *Note {
+	return &Note{IntervalToMidC: Interval(intervalToMidC)}
 }
 
 func (n *Note) NoteName() NoteName {

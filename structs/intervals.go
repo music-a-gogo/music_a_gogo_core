@@ -1,6 +1,9 @@
 package elements
 
-import "sort"
+import (
+	"math"
+	"sort"
+)
 
 type Intervals []Interval
 
@@ -47,11 +50,27 @@ func (is Intervals) HasDuplicates() bool {
 	return false
 }
 
-func (is Intervals) Contains(i Interval) bool {
+func (is Intervals) Contains(i ...Interval) bool {
+	// Interval slice to map
+	targets := make(map[Interval]struct{})
+	for _, ii := range i {
+		targets[ii] = struct{}{}
+	}
+
 	for _, v := range is {
-		if v == i {
+		if _, ok := targets[v]; ok {
 			return true
 		}
 	}
 	return false
+}
+
+func (is Intervals) Min() Interval {
+	min := Interval(math.MaxInt)
+	for i := range is {
+		if is[i] < min {
+			min = is[i]
+		}
+	}
+	return min
 }

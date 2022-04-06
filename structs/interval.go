@@ -10,8 +10,8 @@ const (
 	Perfect4th                           = 5
 	Augmented4th, Diminished5th, Tritone = 6, 6, 6
 	Perfect5th                           = 7
-	Minor6th                             = 8
-	Major6th                             = 9
+	Minor6th, Augmented5th               = 8, 8
+	Major6th, Diminished7th              = 9, 9
 	Minor7th                             = 10
 	Major7th                             = 11
 	PerfectOctave                        = 12

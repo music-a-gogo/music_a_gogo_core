@@ -74,3 +74,11 @@ func (is Intervals) Min() Interval {
 	}
 	return min
 }
+
+func (is Intervals) Sum() int {
+	sum := 0
+	for _, v := range is {
+		sum += int(v)
+	}
+	return sum
+}

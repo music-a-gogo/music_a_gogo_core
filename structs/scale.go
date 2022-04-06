@@ -30,7 +30,7 @@ type Scale struct {
 }
 
 func (s *Scale) intervalOfIntervals() int {
-	return utility.IntervalSum(s.Intervals)
+	return Intervals(s.Intervals).Sum()
 }
 
 func NewScale(root *Note, nums []int) (*Scale, error) {
@@ -52,7 +52,7 @@ func NewScale(root *Note, nums []int) (*Scale, error) {
 }
 
 func (s *Scale) NthNoteName(n int) NoteName {
-	steps := s.intervalOfIntervals()*(n/len(s.Intervals)) + utility.IntervalSum(s.Intervals[:(n%len(s.Intervals))])
+	steps := s.intervalOfIntervals()*(n/len(s.Intervals)) + Intervals(s.Intervals[:(n%len(s.Intervals))]).Sum()
 	note := s.Root.Add(Interval(steps))
 	return note.NoteName()
 }

@@ -96,7 +96,7 @@ func (c *Chord) ChordName() (string, error) {
 		}
 		// has inversion
 		noteName := c.Root.Add(lowest.ToRelative()).NoteName()
-		return fmt.Sprintf("%s/%s", noteName, name), err
+		return fmt.Sprintf("%s/%s", NoteNameToStrMap[noteName], name), err
 	}
 
 	if c.has7th() {
@@ -202,5 +202,5 @@ func powerChordName(c *Chord) (string, error) {
 	if !c.GetFilteredIntervals().Contains(Unison, Perfect5th) {
 		return "", errors.New("not a power chord")
 	}
-	return fmt.Sprintf("%s5", c.Root.NoteName()), nil
+	return fmt.Sprintf("%s5", NoteNameToStrMap[c.Root.NoteName()]), nil
 }

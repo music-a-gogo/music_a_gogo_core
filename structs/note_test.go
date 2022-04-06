@@ -8,9 +8,9 @@ import (
 
 func TestNote(t *testing.T) {
 	type want struct {
-		wantName     []string
+		wantName     string
 		wantSpnGroup int8
-		wantSpn      []string
+		wantSpn      string
 	}
 	cases := []struct {
 		desc string
@@ -20,11 +20,11 @@ func TestNote(t *testing.T) {
 		{
 			desc: "01. mid C",
 			note: &Note{IntervalToMidC: 0},
-			want: want{wantName: []string{"C"}, wantSpnGroup: 4, wantSpn: []string{"C4"}},
+			want: want{wantName: "C", wantSpnGroup: 4, wantSpn: "C4"},
 		},
 	}
 	for _, tt := range cases {
-		assert.Equal(t, tt.want.wantName, tt.note.NoteName())
+		assert.Equal(t, tt.want.wantName, NoteNameToStrMap[tt.note.NoteName()])
 		assert.Equal(t, tt.want.wantSpnGroup, tt.note.SPNGroup())
 		assert.Equal(t, tt.want.wantSpn, tt.note.SPN())
 	}

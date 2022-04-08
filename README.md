@@ -20,8 +20,9 @@ The project name `Music A Gogo` is referring the famous French song [Jazz À Gog
     Scale is the sequence of notes. 
     For a major scale, the interval between them will be `2(semitones) - 2 - 1 - 2 - 2 - 2 - 1`, exactly the case of `C D E F G A B C` (C major)
 
-## Useful Methods
-tbd
+- Chord:
+    Chord is defined by a root note and a slice of intervals to root note.
+
 
 # Make Contributions
 The project is on developing. Feel free to raise an issue or a PR.
